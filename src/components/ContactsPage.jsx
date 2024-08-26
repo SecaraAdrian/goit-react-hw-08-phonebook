@@ -3,12 +3,16 @@ import { fetchContacts, addContact, deleteContact } from '../services/api';
 import { Box, Button, TextField, List, ListItem, ListItemText, IconButton, Paper, Typography, Alert } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function ContactsPage() {
   const [contacts, setContacts] = useState([]);
   const [newContact, setNewContact] = useState({ name: '', phone: '' });
-  const [error, setError] = useState(''); // Stare pentru erori
-  const [successMessage, setSuccessMessage] = useState(''); // Stare pentru mesaje de succes
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate(); // Hook pentru navigare
+  const location = useLocation(); // Hook pentru locația curentă
 
   useEffect(() => {
     const getContacts = async () => {
@@ -31,9 +35,9 @@ function ContactsPage() {
     }
     
     try {
-      const addedContact = await addContact(newContact); // Trimitere cerere API
+      const addedContact = await addContact(newContact);
       setContacts((prevContacts) => [...prevContacts, addedContact]);
-      setNewContact({ name: '', phone: '' }); // Resetare formular după adăugare
+      setNewContact({ name: '', phone: '' });
       setSuccessMessage('Contact added successfully!');
       setError('');
     } catch (error) {
@@ -52,11 +56,25 @@ function ContactsPage() {
     }
   };
 
+  const handleBack = () => {
+    // Verificăm dacă există o istorie de navigare pentru a ne întoarce
+    if (location.key !== 'default') {
+      navigate(-1); // Navigăm înapoi la pagina anterioară
+    } else {
+      navigate('/auth'); // Dacă nu există istorie, navigăm la pagina de autentificare
+    }
+  };
+
   return (
     <Paper elevation={3} sx={{ padding: 4, mt: 2 }}>
-      <Typography variant="h4" gutterBottom>
-        My Contacts
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        <IconButton onClick={handleBack} color="primary">
+          <ArrowBackIcon />
+        </IconButton>
+        <Typography variant="h4" sx={{ flexGrow: 1, textAlign: 'center' }}>
+          My Contacts
+        </Typography>
+      </Box>
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       {successMessage && <Alert severity="success" sx={{ mb: 2 }}>{successMessage}</Alert>}
       <Box sx={{ display: 'flex', mb: 2 }}>
