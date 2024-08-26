@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import UserMenu from './components/UserMenu';
 import AuthPage from './components/AuthPage';
@@ -35,9 +35,8 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
+      <Router basename="/goit-react-hw-08-phonebook">
         <div>
-          {/* Ascundem Navigation și UserMenu dacă utilizatorul nu este autentificat */}
           {isLoggedIn && (
             <>
               <Navigation isLoggedIn={isLoggedIn} />
@@ -45,10 +44,10 @@ function App() {
             </>
           )}
           <Routes>
-            {/* Ascundem componenta de autentificare după logare */}
             <Route path="/auth" element={isLoggedIn ? <Navigate to="/contacts" /> : <AuthPage onLogin={handleLogin} />} />
             <Route path="/contacts" element={isLoggedIn ? <ContactsPage /> : <Navigate to="/auth" />} />
             <Route path="/" element={<Navigate to={isLoggedIn ? "/contacts" : "/auth"} />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
       </Router>
