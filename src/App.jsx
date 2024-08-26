@@ -35,7 +35,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router basename="/goit-react-hw-08-phonebook">
+      <Router basename={process.env.NODE_ENV === 'production' ? "/goit-react-hw-08-phonebook" : "/"}>
         <div>
           {isLoggedIn && (
             <>
@@ -47,7 +47,7 @@ function App() {
             <Route path="/auth" element={isLoggedIn ? <Navigate to="/contacts" /> : <AuthPage onLogin={handleLogin} />} />
             <Route path="/contacts" element={isLoggedIn ? <ContactsPage /> : <Navigate to="/auth" />} />
             <Route path="/" element={<Navigate to={isLoggedIn ? "/contacts" : "/auth"} />} />
-            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="*" element={<Navigate to={isLoggedIn ? "/contacts" : "/auth"} />} />
           </Routes>
         </div>
       </Router>
